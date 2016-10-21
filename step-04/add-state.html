@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8">
+  <title>Simple Demo</title>
+  <link rel="stylesheet" href="../shared/css/bootstrap.min.css">
+  <script src="../shared/js/react.min.js"></script>
+  <script src="../shared/js/react-dom.min.js"></script>
+  <script src="../shared/js/browser.min.js"></script>
+</head>
+<body>
+<div id="container">
+
+</div>
+<script type="text/babel">
+  var Comment = React.createClass({
+    getInitialState: function () {
+      return {editing: false}
+    },
+    edit: function () {
+      this.setState({editState: true});
+    },
+    remove: function () {
+      console.log("remove comment");
+    },
+    save: function () {
+      this.setState({editState: false});
+    },
+    renderNormal: function () {
+      return (
+        <div className="commetContainer">
+          <div className="commnetText">{this.props.children}</div>
+          <button onClick={this.edit} className="btn btn-primary">Edit</button>
+          <button onClick={this.remove} className="btn btn-danger">Remove</button>
+        </div>
+      )
+    },
+    renderForm: function () {
+      return (
+        <div className="commetContainer">
+          <textarea defaultValue={this.props.children}/>
+          <button onClick={this.save} className="btn btn-primary">save</button>
+        </div>
+      )
+    },
+    render: function () {
+      if (this.state.editState) {
+        return this.renderForm();
+      } else {
+        return this.renderNormal();
+      }
+    }
+  });
+  ReactDOM.render(
+    <div className="jumbotron">
+      <Comment>Hey guys</Comment>
+      <Comment>Beans</Comment>
+      <Comment>Tuns </Comment>
+    </div>,
+    document.getElementById("container")
+  );
+
+</script>
+</body>
+</html>

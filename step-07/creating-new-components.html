@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8">
+  <title>Simple Demo</title>
+  <link rel="stylesheet" href="../shared/css/bootstrap.min.css">
+  <script src="../shared/js/react.min.js"></script>
+  <script src="../shared/js/react-dom.min.js"></script>
+  <script src="../shared/js/browser.min.js"></script>
+</head>
+<body>
+<div id="container">
+
+</div>
+<script type="text/babel">
+  var Comment = React.createClass({
+    getInitialState: function () {
+      return {editing: false}
+    },
+    edit: function () {
+      this.setState({editState: true});
+    },
+    remove: function () {
+      console.log("remove comment");
+      this.props.removeCommentText(this.props.index);
+    },
+    save: function () {
+      var val = this.refs.newText.value;
+      console.log(val);
+      this.props.saveCommentText(val, this.props.index);
+      this.setState({editState: false});
+    },
+    renderNormal: function () {
+      return (
+        <div className="commetContainer">
+          <div className="commnetText">{this.props.children}</div>
+          <button onClick={this.edit} className="btn btn-primary">Edit</button>
+          <button onClick={this.remove} className="btn btn-danger">Remove</button>
+        </div>
+      )
+    },
+    renderForm: function () {
+      return (
+        <div className="commetContainer">
+          <textarea ref="newText" defaultValue={this.props.children}/>
+          <button onClick={this.save} className="btn btn-primary">save</button>
+        </div>
+      )
+    },
+    render: function () {
+      if (this.state.editState) {
+        return this.renderForm();
+      } else {
+        return this.renderNormal();
+      }
+    }
+  });
+  var Board = React.createClass({
+    getInitialState: function () {
+      return {
+        comments: [
+          'I like bacon',
+          'want to get ice cream?',
+          'Ok ,we have enough comments now'
+        ]
+      }
+    },
+    add: function (text) {
+      var arr = this.state.comments;
+      arr.push(text);
+      this.setState({comments: arr})
+    },
+    removeComment: function (i) {
+      console.log('removing comment:' + i);
+      var arr = this.state.comments;
+      arr.splice(i, 1);
+      this.setState({comments: arr})
+    },
+    saveComment: function (newText, i) {
+      console.log('save comment');
+      var arr = this.state.comments;
+      arr[i] = newText;
+      this.setState({comments: arr})
+    },
+    eachComment: function (text, i) {
+      return (
+        <Comment key={i} index={i} saveCommentText={this.saveComment} removeCommentText={this.removeComment}>
+          {text}
+        </Comment>
+      )
+    },
+    render: function () {
+      return (
+        <div>
+
+          <div className="jumbotron">
+            <button onClick={this.add.bind(null, 'default text')} className="btn btn-info">add new comment</button>
+            {
+              this.state.comments.map(this.eachComment)
+            }
+          </div>
+        </div>
+      )
+    }
+  });
+
+  ReactDOM.render(<Board />,
+    document.getElementById("container")
+  );
+
+</script>
+</body>
+</html>
